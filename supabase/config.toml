@@ -1,0 +1,29 @@
+project_id = "btaflovoauxjtqcyxsmt"
+
+[auth]
+# Dev server runs on 3001 (see package.json "dev": "next dev -p 3001").
+# These must stay in sync with Supabase Dashboard -> Authentication -> URL Configuration.
+site_url = "http://localhost:3001"
+additional_redirect_urls = [
+  "http://localhost:3001/reset-password",
+  "http://127.0.0.1:3001/reset-password",
+]
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+# Password recovery must include BOTH {{ .ConfirmationURL }} (the link) and
+# {{ .Token }} (the 6-digit code) for the two entry points on /reset-password.
+secure_password_change = false
+
+[auth.email.template]
+subject = "= Confirmation code: {{ .Token }}"
+content = """
+<h2>Reset password</h2>
+<p>Kode verifikasi Anda: <strong>{{ .Token }}</strong></p>
+<p>Atau gunakan tautan berikut: <a href="{{ .ConfirmationURL }}">Reset Password</a></p>
+"""
+
+[functions.keep-alive]
+verify_jwt = false
