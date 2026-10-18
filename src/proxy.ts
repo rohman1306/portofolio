@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { supabaseUrl, supabaseKey, isSupabaseConfigured } from "@/supabase/env";
 
 const protectedRoutes = ["/dashboard", "/holdings", "/goals", "/learning", "/allocation", "/settings", "/aadmin-k23hdnhsd"];
 // /reset-password is intentionally excluded: a Supabase password-recovery session is
@@ -10,8 +11,8 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
@@ -36,7 +37,9 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = isSupabaseConfigured
+    ? (await supabase.auth.getUser()).data.user
+    : null;
 
   const pathname = request.nextUrl.pathname;
 
