@@ -7,13 +7,19 @@ import {
   GraduationCap,
   Settings,
   LogOut,
+  X,
 } from "lucide-react";
 import Logo from "./Logo";
 import SidebarItem from "./SidebarItem";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function AppSidebar() {
+interface AppSidebarProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export default function AppSidebar({ open = false, onClose }: AppSidebarProps) {
   const { logout, user } = useAuth();
   const { t } = useLanguage();
 
@@ -26,9 +32,23 @@ export default function AppSidebar() {
   ];
 
   return (
-    <aside className="w-72 border-r border-slate-200 bg-white text-slate-900 h-screen p-6 flex flex-col justify-between">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-72 flex-col justify-between border-r border-slate-200 bg-white p-6 text-slate-900 transition-transform duration-300 ${
+        open ? "translate-x-0" : "-translate-x-full"
+      } lg:sticky lg:top-0 lg:z-auto lg:translate-x-0`}
+    >
       <div>
-        <Logo />
+        <div className="flex items-center justify-between">
+          <Logo />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close menu"
+            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+          >
+            <X size={20} />
+          </button>
+        </div>
         <nav className="space-y-2 mt-6">
           {menus.map((menu) => (
             <SidebarItem key={menu.href} {...menu} />

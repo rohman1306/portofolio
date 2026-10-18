@@ -233,7 +233,7 @@ export default function TransactionDialog({
               <Info size={14} className="text-slate-400" />
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{t("holdings.currentOwnership")}</span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-xs text-slate-500 mb-0.5">{t("common.quantity")}</p>
                 <p className="text-sm font-bold text-slate-900">

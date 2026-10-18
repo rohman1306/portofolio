@@ -141,7 +141,7 @@ export default function HoldingDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">{t("holdings.tickerLabel")}</label>
               <Input
@@ -183,7 +183,7 @@ export default function HoldingDialog({
             <Input placeholder={t("holdings.assetNamePlaceholder")} {...register("nama_aset")} className="bg-card border-border" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">{t("holdings.unitQuantityLabel")}</label>
               <FormattedNumberInput value={watch("jumlah_unit")}
@@ -196,7 +196,7 @@ export default function HoldingDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">
                 {t("holdings.avgBuyPriceLabel")} <span className="text-muted-foreground/60">({currency})</span>

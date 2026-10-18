@@ -70,7 +70,7 @@ export default function GoalsPage() {
 
   return (
     <div className="space-y-6 pb-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">{t("goals.title")}</h1>
           <p className="text-slate-500 mt-1">{t("goals.description")}</p>

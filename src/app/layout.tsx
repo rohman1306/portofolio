@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
+      <body className="overflow-x-hidden">
         <Script
           id="theme-init"
           strategy="beforeInteractive"

@@ -91,7 +91,7 @@ export default function GoalDialog({ open, onOpenChange, onSubmit, editingGoal }
             <Input {...register("nama")} placeholder={t("goals.goalNamePlaceholder")} className="bg-card border-border" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">{t("common.category")}</label>
               <Select value={watch("kategori")} onValueChange={(v) => setValue("kategori", v as GoalCategory)}>
@@ -114,7 +114,7 @@ export default function GoalDialog({ open, onOpenChange, onSubmit, editingGoal }
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">
                 {t("goals.targetValueLabel")} <span className="text-muted-foreground/60">({currency})</span>

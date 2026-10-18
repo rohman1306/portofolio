@@ -13,14 +13,14 @@ interface HoldingsHeaderProps {
 export default function HoldingsHeader({ onAdd, onRefresh, refreshing }: HoldingsHeaderProps) {
   const { t } = useLanguage();
   return (
-    <div className="flex items-center justify-between mb-2">
+    <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">{t("holdings.title")}</h1>
         <p className="text-slate-500 mt-1">
           {t("holdings.description")}
         </p>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {onRefresh && (
           <Button
             onClick={onRefresh}

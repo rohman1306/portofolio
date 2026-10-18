@@ -22,8 +22,8 @@ export default function AllocationPieChart({ allocations }: AllocationPieChartPr
   return (
     <div className="rounded-xl border border-border/80 bg-card/70 p-6">
       <h3 className="text-lg font-semibold text-foreground mb-6">{t("allocation.title")}</h3>
-      <div className="flex items-center gap-8">
-        <div className="h-[200px] w-[200px]">
+      <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+        <div className="h-[200px] w-[200px] shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -40,7 +40,7 @@ export default function AllocationPieChart({ allocations }: AllocationPieChartPr
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="space-y-3 flex-1">
+        <div className="w-full space-y-3 sm:flex-1">
           {data.map((item) => (
             <div key={item.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">

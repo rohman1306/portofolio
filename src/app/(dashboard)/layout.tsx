@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import AppHeader from "@/components/layout/AppHeader";
 import AppSidebar from "@/components/layout/AppSidebar";
@@ -18,6 +18,11 @@ export default function DashboardLayout({
   const { user, loading } = useAuth();
   const { t } = useLanguage();
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   // Initialize Lenis Smooth Scroll
   useEffect(() => {
@@ -58,13 +63,21 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f8f9fc] text-slate-900">
-      <AppSidebar />
+    <div className="flex min-h-screen overflow-x-hidden bg-[#f8f9fc] text-slate-900">
+      <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex flex-1 flex-col">
-        <AppHeader />
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-        <main className="flex-1 p-8 overflow-y-auto">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AppHeader onMenuClick={() => setSidebarOpen(true)} />
+
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <motion.div
             key={pathname}
             initial={{ opacity: 0, x: 60 }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getNotifications, getUnreadCount, type Notification } from "@/lib/notifications";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -14,7 +14,7 @@ function NotificationPanel({ notifications, t }: { notifications: Notification[]
   const displayed = showAll ? notifications : notifications.slice(0, 5);
 
   return (
-    <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border border-slate-200 bg-white shadow-xl z-50">
+    <div className="absolute right-0 top-full mt-2 z-50 w-[calc(100vw-2rem)] max-w-80 rounded-xl border border-slate-200 bg-white shadow-xl sm:w-80">
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
         <h3 className="text-sm font-semibold text-slate-900">{t("common.notifications")}</h3>
         {notifications.length > 5 && (
@@ -68,7 +68,7 @@ function NotificationPanel({ notifications, t }: { notifications: Notification[]
   );
 }
 
-export default function AppHeader() {
+export default function AppHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -92,8 +92,16 @@ export default function AppHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 flex h-16 items-center justify-end border-b border-slate-200 bg-white px-8 text-slate-900">
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 text-slate-900 sm:px-6 lg:justify-end lg:px-8">
+      <button
+        type="button"
+        onClick={onMenuClick}
+        aria-label="Open menu"
+        className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+      >
+        <Menu size={22} />
+      </button>
+      <div className="flex items-center gap-2 sm:gap-4">
         <CurrencyToggle />
         <LanguageToggle />
         <div ref={ref} className="relative">

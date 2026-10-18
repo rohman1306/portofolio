@@ -24,8 +24,8 @@ export default function AllocationChart({ allocations }: AllocationChartProps) {
       {data.length === 0 ? (
         <p className="text-slate-500 text-sm text-center py-4">Belum ada alokasi</p>
       ) : (
-        <div className="flex items-center gap-8">
-          <div className="h-[200px] w-[200px]">
+        <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+          <div className="h-[200px] w-[200px] shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -44,7 +44,7 @@ export default function AllocationChart({ allocations }: AllocationChartProps) {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="space-y-3 flex-1">
+          <div className="w-full space-y-3 sm:flex-1">
             {data.map((item, i) => (
               <div key={item.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
