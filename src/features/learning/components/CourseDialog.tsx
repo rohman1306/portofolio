@@ -218,7 +218,7 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
           </div>
         </form>
 
-        <DialogFooter className="gap-2 pt-2">
+        <DialogFooter className="gap-2 pt-2 sticky bottom-0 z-10 bg-white/95 backdrop-blur-sm">
           <DialogClose render={<Button variant="outline" className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium" />}>
             {t("common.cancel")}
           </DialogClose>

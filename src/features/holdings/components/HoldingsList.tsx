@@ -38,10 +38,118 @@ export default function HoldingsList({
 }: HoldingsListProps) {
   const { t } = useLanguage();
   const { currency, rate } = useCurrency();
+
+  const calcPnl = (h: Holding) => {
+    const totalBeli = h.jumlah_unit * h.harga_beli_rata2;
+    const totalKini = h.jumlah_unit * h.nilai_saat_ini;
+    const pnl = totalKini - totalBeli;
+    const pnlPercent = totalBeli > 0 ? (pnl / totalBeli) * 100 : 0;
+    return { pnl, pnlPercent, isProfit: pnl >= 0 };
+  };
+
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      {/* Mobile: card list */}
+      <div className="md:hidden divide-y divide-slate-100">
+        {holdings.map((holding, index) => {
+          const { pnl, pnlPercent, isProfit } = calcPnl(holding);
+          const isSelected = selectedHoldingId === holding.id;
+
+          return (
+            <motion.div
+              key={holding.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
+              onClick={() => onSelect?.(isSelected ? null : holding.id)}
+              className={`px-4 py-3.5 space-y-2.5 transition-colors cursor-pointer ${
+                isSelected ? "bg-[#f0f7fa]/70" : ""
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-slate-900 font-semibold text-sm">{holding.ticker}</p>
+                    <Badge
+                      variant="outline"
+                      className={`font-medium text-[11px] px-1.5 py-0 ${kategoriColors[holding.kategori] || kategoriColors["Lainnya"]}`}
+                    >
+                      {holding.kategori}
+                    </Badge>
+                  </div>
+                  <p className="text-slate-500 text-xs mt-0.5 truncate">{holding.nama_aset}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-slate-900 font-semibold text-sm">
+                    {formatCurrency(holding.nilai_saat_ini, currency, rate)}
+                  </p>
+                  <div className="flex items-center justify-end gap-1 mt-0.5">
+                    {isProfit ? (
+                      <TrendingUp size={12} className="text-emerald-500" />
+                    ) : (
+                      <TrendingDown size={12} className="text-red-500" />
+                    )}
+                    <span className={`text-xs font-medium ${isProfit ? "text-emerald-600" : "text-red-600"}`}>
+                      {isProfit ? "+" : ""}{formatCurrency(pnl, currency, rate)}
+                    </span>
+                    <span className={`text-[10px] ${isProfit ? "text-emerald-600/70" : "text-red-600/70"}`}>
+                      ({isProfit ? "+" : ""}{pnlPercent.toFixed(1)}%)
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>
+                  {t("common.quantity")}: <span className="font-medium text-slate-700">{formatNumber(holding.jumlah_unit)}</span>
+                </span>
+                <span>
+                  {t("common.buyPrice")}: <span className="font-medium text-slate-700">{formatCurrency(holding.harga_beli_rata2, currency, rate)}</span>
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  onClick={() => onDca(holding)}
+                  className="h-8 px-3 text-xs font-semibold bg-[#f0f7fa] border border-[#005274]/20 text-[#005274] hover:bg-[#005274] hover:text-white hover:border-[#005274] transition-all duration-200 flex items-center gap-1.5 rounded-md shadow-sm"
+                >
+                  <Plus size={13} />
+                  {t("holdings.dcaButton")}
+                </Button>
+                <Button
+                  onClick={() => onSell(holding)}
+                  className="h-8 px-3 text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white hover:border-rose-600 transition-all duration-200 flex items-center gap-1.5 rounded-md shadow-sm"
+                >
+                  <Minus size={13} />
+                  {t("holdings.sellButton")}
+                </Button>
+                <div className="ml-auto flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => onEdit(holding)}
+                    className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
+                  >
+                    <Pencil size={14} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => onDelete(holding.id)}
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors rounded-md"
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/50">
               <th className="text-left py-3 px-4 text-slate-500 font-medium">{t("common.instrument")}</th>
@@ -55,11 +163,7 @@ export default function HoldingsList({
           </thead>
           <tbody>
             {holdings.map((holding, index) => {
-              const totalBeli = holding.jumlah_unit * holding.harga_beli_rata2;
-              const totalKini = holding.jumlah_unit * holding.nilai_saat_ini;
-              const pnl = totalKini - totalBeli;
-              const pnlPercent = totalBeli > 0 ? (pnl / totalBeli) * 100 : 0;
-              const isProfit = pnl >= 0;
+              const { pnl, pnlPercent, isProfit } = calcPnl(holding);
               const isSelected = selectedHoldingId === holding.id;
 
               return (

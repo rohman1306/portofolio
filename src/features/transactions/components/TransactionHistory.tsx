@@ -56,8 +56,75 @@ export default function TransactionHistory({ holdingId }: TransactionHistoryProp
           <span className="text-xs text-slate-400 ml-auto">{transactions.length} {t("holdings.unitSuffix").toLowerCase()}</span>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      {/* Mobile: card list */}
+      <div className="md:hidden divide-y divide-slate-50">
+        {transactions.map((tx, index) => {
+          const config = typeConfig[tx.type as keyof typeof typeConfig] ?? typeConfig.DCA;
+          const isProfit = (tx.pnl ?? 0) >= 0;
+
+          return (
+            <motion.div
+              key={tx.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: index * 0.03 }}
+              className="px-4 py-3 space-y-2"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold border ${config.bgClass} ${config.textClass} ${config.borderClass}`}>
+                  {tx.type === "DCA" ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                  {t(config.labelKey)}
+                </span>
+                <div className="flex items-center gap-1.5 text-slate-500">
+                  <Clock size={11} className="text-slate-400" />
+                  <span className="text-xs">{tx.tanggal}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-500">
+                  {t("common.quantity")}: <span className="font-medium text-slate-700">{tx.jumlah_unit}</span>
+                </span>
+                <span className="text-slate-900 font-semibold">
+                  {formatCurrency(tx.total_idr, currency, rate)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  {tx.pnl != null ? (
+                    <div className="flex items-center gap-1">
+                      {isProfit ? <TrendingUp size={11} className="text-emerald-500" /> : <TrendingDown size={11} className="text-red-500" />}
+                      <span className={`text-xs font-semibold ${isProfit ? "text-emerald-600" : "text-red-600"}`}>
+                        {isProfit ? "+" : ""}{formatCurrency(tx.pnl, currency, rate)}
+                      </span>
+                      {tx.pnl_percent != null && (
+                        <span className={`text-[10px] ${isProfit ? "text-emerald-600/70" : "text-red-600/70"}`}>
+                          ({tx.pnl_percent >= 0 ? "+" : ""}{tx.pnl_percent.toFixed(1)}%)
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400">-</span>
+                  )}
+                </div>
+                {tx.type === "JUAL" && (
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                    tx.is_withdrawn
+                      ? "bg-amber-50 text-amber-700 border border-amber-200"
+                      : "bg-slate-100 text-slate-500 border border-slate-200"
+                  }`}>
+                    <Wallet size={10} />
+                    {tx.is_withdrawn ? t("holdings.withdrawn") : t("holdings.notWithdrawn")}
+                  </span>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full min-w-[680px] text-sm">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/50">
               <th className="text-left py-2.5 px-4 text-slate-500 font-medium text-xs">{t("common.type")}</th>

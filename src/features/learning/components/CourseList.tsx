@@ -33,6 +33,11 @@ const asalConfig: Record<string, { icon: React.ComponentType<{ size?: number }>;
   Luar: { icon: Globe, color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
 };
 
+function KategoriIcon({ kategori, size }: { kategori: string; size: number }) {
+  const Icon = kategoriConfig[kategori]?.icon ?? kategoriConfig["Saham"].icon;
+  return <Icon size={size} />;
+}
+
 export default function CourseList({ courses, onEdit, onDelete }: CourseListProps) {
   const { t } = useLanguage();
   const { currency, rate } = useCurrency();
@@ -50,8 +55,106 @@ export default function CourseList({ courses, onEdit, onDelete }: CourseListProp
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      {/* Mobile: card list */}
+      <div className="md:hidden divide-y divide-slate-100">
+        {groupedCourses.map(([kategori, items]) => (
+          <div key={kategori}>
+            <div className="bg-slate-50/80 px-4 py-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <KategoriIcon kategori={kategori} size={12} />
+                {kategori}
+                <span className="text-slate-400 font-medium normal-case">· {items.length}</span>
+              </span>
+            </div>
+            {items.map((c, index) => (
+              <motion.div
+                key={c.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
+                className="px-4 py-3.5 space-y-2.5"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    {c.urutan_beli ? (
+                      <span className="inline-flex items-center justify-center h-6 w-6 shrink-0 rounded-full bg-[#f0f7fa] text-[#0074a6] text-xs font-semibold">
+                        {c.urutan_beli}
+                      </span>
+                    ) : null}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-slate-900 font-medium text-sm leading-snug break-words">{c.nama}</p>
+                        {c.link && (
+                          <a
+                            href={c.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0074a6] hover:text-[#005274] inline-flex items-center shrink-0"
+                            aria-label={c.nama}
+                          >
+                            <ExternalLink size={13} />
+                          </a>
+                        )}
+                      </div>
+                      {c.catatan_insight && (
+                        <p className="text-slate-500 text-xs mt-0.5 line-clamp-2">{c.catatan_insight}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => onEdit(c)}
+                      className="h-8 w-8 text-slate-400 hover:text-[#0074a6] hover:bg-[#f0f7fa] transition-colors rounded-md"
+                    >
+                      <Pencil size={14} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => onDelete(c.id)}
+                      className="h-8 w-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors rounded-md"
+                    >
+                      <Trash2 size={14} />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge
+                    variant="outline"
+                    className={`font-medium border inline-flex items-center gap-1 text-[11px] px-1.5 py-0 ${kategoriConfig[kategori]?.color ?? kategoriConfig["Saham"].color}`}
+                  >
+                    <KategoriIcon kategori={kategori} size={10} />
+                    {kategori}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className={`font-medium border inline-flex items-center gap-1 text-[11px] px-1.5 py-0 ${asalConfig[c.asal]?.color ?? asalConfig["Lokal"].color}`}
+                  >
+                    {(() => {
+                      const AsalIcon = asalConfig[c.asal]?.icon ?? asalConfig["Lokal"].icon;
+                      return <AsalIcon size={10} />;
+                    })()}
+                    {c.asal === "Lokal" ? t("learning.categoryLocal") : t("learning.categoryInternational")}
+                  </Badge>
+                  <Badge variant="outline" className={`font-medium border text-[11px] px-1.5 py-0 ${statusColors[c.status] || statusColors["Belum Mulai"]}`}>
+                    {c.status}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-medium text-slate-900 text-[13px]">{formatCurrency(c.biaya, currency, rate)}</span>
+                  <span>{new Date(c.tanggal_beli).toLocaleDateString("id-ID")}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/50">
               <th className="text-left py-3 px-4 text-slate-500 font-medium w-14">{t("learning.orderColumn")}</th>
@@ -70,10 +173,7 @@ export default function CourseList({ courses, onEdit, onDelete }: CourseListProp
                 <tr className="bg-slate-50/80">
                   <td colSpan={8} className="py-2 px-4">
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                      {(() => {
-                        const KategoriIcon = kategoriConfig[kategori]?.icon ?? kategoriConfig["Saham"].icon;
-                        return <KategoriIcon size={12} />;
-                      })()}
+                      <KategoriIcon kategori={kategori} size={12} />
                       {kategori}
                       <span className="text-slate-400 font-medium normal-case">· {items.length}</span>
                     </span>
@@ -128,10 +228,7 @@ export default function CourseList({ courses, onEdit, onDelete }: CourseListProp
                         variant="outline"
                         className={`font-medium border inline-flex items-center gap-1 ${kategoriConfig[kategori]?.color ?? kategoriConfig["Saham"].color}`}
                       >
-                        {(() => {
-                          const KategoriIcon = kategoriConfig[kategori]?.icon ?? kategoriConfig["Saham"].icon;
-                          return <KategoriIcon size={10} />;
-                        })()}
+                        <KategoriIcon kategori={kategori} size={10} />
                         {kategori}
                       </Badge>
                       <Badge
@@ -173,8 +270,8 @@ export default function CourseList({ courses, onEdit, onDelete }: CourseListProp
                       </Button>
                     </div>
                   </td>
-                  </motion.tr>
-                );
+                    </motion.tr>
+                  );
                 })}
               </Fragment>
             ))}

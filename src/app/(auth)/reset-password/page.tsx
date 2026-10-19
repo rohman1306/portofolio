@@ -75,9 +75,9 @@ export default function ResetPasswordPage() {
   if (!recoveryChecked) {
     return (
       <AuthLayout showSimulationNotice={false} title={t("auth.resetPasswordTitle")} description={t("auth.resetPasswordDescription")}>
-        <div className="flex items-center justify-center gap-2 py-8 text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 py-8 text-slate-500">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-xs font-mono uppercase tracking-wider">{t("auth.verifyingSession")}</span>
+          <span className="text-sm">{t("auth.verifyingSession")}</span>
         </div>
       </AuthLayout>
     );
@@ -87,12 +87,12 @@ export default function ResetPasswordPage() {
     return (
       <AuthLayout showSimulationNotice={false} title={t("auth.enterCodeTitle")} description={t("auth.enterCodeDescription")}>
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="recovery-email" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider font-mono">
+          <div className="space-y-1.5">
+            <Label htmlFor="recovery-email" className="text-sm font-medium text-slate-700">
               {t("auth.emailLabel")}
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 id="recovery-email"
                 type="email"
@@ -100,13 +100,13 @@ export default function ResetPasswordPage() {
                 value={email}
                 onChange={(e) => setEmailOverride(e.target.value)}
                 placeholder={t("auth.emailPlaceholder")}
-                className="border-border bg-muted/30 pl-10 text-foreground placeholder-muted-foreground focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 focus:bg-muted/60 transition-all duration-200"
+                className="h-10 border-slate-200 bg-white pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-[#0074a6]/50 focus-visible:ring-[#0074a6]/10"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="recovery-code" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider font-mono">
+          <div className="space-y-1.5">
+            <Label htmlFor="recovery-code" className="text-sm font-medium text-slate-700">
               {t("auth.codeLabel")}
             </Label>
             <OtpInput
@@ -116,7 +116,7 @@ export default function ResetPasswordPage() {
               onComplete={submitCode}
               disabled={isLoading}
             />
-            <p className="text-xs text-muted-foreground">{t("auth.codeHint")}</p>
+            <p className="text-xs text-slate-500">{t("auth.codeHint")}</p>
           </div>
 
           <div className="pt-2 space-y-2">
@@ -124,7 +124,7 @@ export default function ResetPasswordPage() {
               type="button"
               onClick={submitCode}
               disabled={isLoading || code.length !== 6}
-              className="w-full relative overflow-hidden bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 font-bold text-white hover:opacity-90 shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all duration-300 shimmer-btn"
+              className="w-full h-10 bg-[#005274] hover:bg-[#003d57] text-white font-semibold text-sm transition-colors"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
                   {t("auth.verifyingCode")}
                 </span>
               ) : (
-                <span className="tracking-wider uppercase font-mono">{t("auth.verifyCodeButton")}</span>
+                t("auth.verifyCodeButton")
               )}
             </Button>
 
@@ -140,17 +140,17 @@ export default function ResetPasswordPage() {
               type="button"
               onClick={() => router.push("/forgot-password")}
               variant="ghost"
-              className="w-full text-xs text-muted-foreground hover:text-cyan-300 transition-colors"
+              className="w-full h-9 text-xs font-medium text-slate-500 hover:text-slate-700 transition-colors"
             >
               {t("auth.resendCode")}
             </Button>
           </div>
 
-          <div className="text-center text-xs text-muted-foreground pt-2">
-            <Link href="/login" className="inline-flex items-center gap-1.5 text-cyan-400 font-bold hover:text-cyan-300 transition-colors">
+          <p className="text-center text-sm text-slate-500 pt-2">
+            <Link href="/login" className="font-medium text-[#0074a6] hover:text-[#005274] transition-colors">
               {t("auth.backToLogin")}
             </Link>
-          </div>
+          </p>
         </div>
       </AuthLayout>
     );
@@ -158,13 +158,13 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout showSimulationNotice={false} title={t("auth.resetPasswordTitle")} description={t("auth.resetPasswordDescription")}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="password" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider font-mono">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-5">
+        <div className="space-y-1.5">
+          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
             {t("auth.passwordLabel")}
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-cyan-500" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -172,26 +172,26 @@ export default function ResetPasswordPage() {
               placeholder={t("auth.passwordPlaceholder")}
               {...register("password")}
               required
-              className="border-border bg-muted/30 pl-10 pr-10 text-foreground placeholder-muted-foreground focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 focus:bg-muted/60 transition-all duration-200"
+              className="h-10 border-slate-200 bg-white pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-[#0074a6]/50 focus-visible:ring-[#0074a6]/10"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
-              className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+          {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="text-muted-foreground text-xs font-semibold uppercase tracking-wider font-mono">
+        <div className="space-y-1.5">
+          <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
             {t("auth.confirmPasswordLabel")}
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground transition-colors duration-200 group-focus-within:text-cyan-500" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               id="confirmPassword"
               type={showPassword ? "text" : "password"}
@@ -199,35 +199,33 @@ export default function ResetPasswordPage() {
               placeholder={t("auth.confirmPasswordPlaceholder")}
               {...register("confirmPassword")}
               required
-              className="border-border bg-muted/30 pl-10 pr-10 text-foreground placeholder-muted-foreground focus:border-cyan-500/60 focus:ring-4 focus:ring-cyan-500/10 focus:bg-muted/60 transition-all duration-200"
+              className="h-10 border-slate-200 bg-white pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-[#0074a6]/50 focus-visible:ring-[#0074a6]/10"
             />
           </div>
-          {errors.confirmPassword && <p className="text-xs text-red-400">{errors.confirmPassword.message}</p>}
+          {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>}
         </div>
 
-        <div className="pt-2">
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full relative overflow-hidden bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 font-bold text-white hover:opacity-90 shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all duration-300 shimmer-btn"
-          >
-            {isLoading ? (
-              <span className="flex items-center gap-2">
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                {t("auth.updatingPassword")}
-              </span>
-            ) : (
-              <span className="tracking-wider uppercase font-mono">{t("auth.updatePasswordButton")}</span>
-            )}
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="w-full h-10 bg-[#005274] hover:bg-[#003d57] text-white font-semibold text-sm transition-colors"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              {t("auth.updatingPassword")}
+            </span>
+          ) : (
+            t("auth.updatePasswordButton")
+          )}
+        </Button>
 
-        <div className="text-center text-xs text-muted-foreground pt-2">
-          <Link href="/login" className="inline-flex items-center gap-1.5 text-cyan-400 font-bold hover:text-cyan-300 transition-colors">
+        <p className="text-center text-sm text-slate-500 pt-2">
+          <Link href="/login" className="inline-flex items-center gap-1.5 font-medium text-[#0074a6] hover:text-[#005274] transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" />
             {t("auth.backToLogin")}
           </Link>
-        </div>
+        </p>
       </form>
     </AuthLayout>
   );

@@ -149,7 +149,7 @@ export default function LearningPage() {
       </div>
 
       {courses.length > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {filterTabs.map((tab) => (
             <button
               key={tab.value}
