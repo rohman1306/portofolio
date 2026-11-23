@@ -2,11 +2,13 @@
 
 import { Fragment, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Pencil, Trash2, Bitcoin, Coins, DollarSign, MapPin, Globe, ExternalLink } from "lucide-react";
+import { Pencil, Trash2, Bitcoin, Coins, DollarSign, MapPin, Globe, ExternalLink, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { Course } from "../types/learning";
+import { parseCourseLinks } from "../utils/links";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
@@ -36,6 +38,39 @@ const asalConfig: Record<string, { icon: React.ComponentType<{ size?: number }>;
 function KategoriIcon({ kategori, size }: { kategori: string; size: number }) {
   const Icon = kategoriConfig[kategori]?.icon ?? kategoriConfig["Saham"].icon;
   return <Icon size={size} />;
+}
+
+function CourseLinks({ link, label }: { link: string; label: string }) {
+  const { t } = useLanguage();
+  const links = parseCourseLinks(link);
+
+  if (links.length === 0) return null;
+
+  return (
+    <span className="inline-flex items-center gap-1 shrink-0">
+      {links.map((url, index) => {
+        const linkLabel = index === 0 ? t("learning.linkPrimary") : t("learning.linkSecondary");
+        return (
+          <a
+            key={`${url}-${index}`}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={linkLabel}
+            aria-label={`${label} - ${linkLabel}`}
+            className={cn(
+              "inline-flex items-center hover:underline",
+              index === 0
+                ? "text-[#0074a6] hover:text-[#005274]"
+                : "text-indigo-500 hover:text-indigo-700"
+            )}
+          >
+            {index === 0 ? <ExternalLink size={13} /> : <Link2 size={13} />}
+          </a>
+        );
+      })}
+    </span>
+  );
 }
 
 export default function CourseList({ courses, onEdit, onDelete }: CourseListProps) {
@@ -84,17 +119,7 @@ export default function CourseList({ courses, onEdit, onDelete }: CourseListProp
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <p className="text-slate-900 font-medium text-sm leading-snug break-words">{c.nama}</p>
-                        {c.link && (
-                          <a
-                            href={c.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#0074a6] hover:text-[#005274] inline-flex items-center shrink-0"
-                            aria-label={c.nama}
-                          >
-                            <ExternalLink size={13} />
-                          </a>
-                        )}
+                        <CourseLinks link={c.link} label={c.nama} />
                       </div>
                       {c.catatan_insight && (
                         <p className="text-slate-500 text-xs mt-0.5 line-clamp-2">{c.catatan_insight}</p>
@@ -204,17 +229,7 @@ export default function CourseList({ courses, onEdit, onDelete }: CourseListProp
                     <div>
                       <div className="flex items-center gap-1.5">
                         <p className="text-slate-900 font-medium">{c.nama}</p>
-                        {c.link && (
-                          <a
-                            href={c.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#0074a6] hover:text-[#005274] hover:underline inline-flex items-center"
-                            aria-label={c.nama}
-                          >
-                            <ExternalLink size={13} />
-                          </a>
-                        )}
+                        <CourseLinks link={c.link} label={c.nama} />
                       </div>
                       {c.catatan_insight && (
                         <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">{c.catatan_insight}</p>

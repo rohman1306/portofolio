@@ -211,10 +211,10 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
             <label className="text-sm font-medium text-slate-700">{t("learning.linkLabel")}</label>
             <Input
               {...register("link")}
-              type="url"
               placeholder={t("learning.linkPlaceholder")}
               className="bg-white border-slate-200 text-slate-900 focus-visible:ring-[#0074a6]/30 focus-visible:border-[#0074a6]"
             />
+            <p className="text-xs text-slate-500">{t("learning.linkHint")}</p>
           </div>
         </form>
 
