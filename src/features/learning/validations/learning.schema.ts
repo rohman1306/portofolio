@@ -10,6 +10,7 @@ export const courseFormSchema = z.object({
   asal: z.enum(["Lokal", "Luar"]),
   catatan_insight: z.string(),
   link: z.string(),
+  link2: z.string(),
   rating: z.number().nullable(),
   urutan_beli: z.number().int().min(1).nullable(),
 });

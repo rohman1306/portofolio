@@ -15,6 +15,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Course, CourseFormData, LearningCategory, LearningOrigin, LearningStatus } from "../types/learning";
+import { parseCourseLinks } from "../utils/links";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { courseFormSchema, type CourseFormValues } from "../validations/learning.schema";
@@ -36,7 +37,7 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
       nama: "", penyedia: "", biaya: 0, tanggal_beli: "",
-      status: "Belum Mulai", kategori: "Crypto", asal: "Lokal", catatan_insight: "", link: "", rating: null,
+      status: "Belum Mulai", kategori: "Crypto", asal: "Lokal", catatan_insight: "", link: "", link2: "", rating: null,
       urutan_beli: null,
     },
   });
@@ -46,6 +47,7 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
 
   useEffect(() => {
     if (editingCourse) {
+      const [link, link2 = ""] = parseCourseLinks(editingCourse.link);
       reset({
         nama: editingCourse.nama, penyedia: editingCourse.penyedia,
         biaya: isUSD ? editingCourse.biaya / rate : editingCourse.biaya,
@@ -54,14 +56,15 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
         kategori: editingCourse.kategori ?? "Crypto",
         asal: editingCourse.asal ?? "Lokal",
         catatan_insight: editingCourse.catatan_insight,
-        link: editingCourse.link ?? "",
+        link: link ?? editingCourse.link ?? "",
+        link2,
         rating: editingCourse.rating,
         urutan_beli: editingCourse.urutan_beli ?? null,
       });
     } else {
       reset({
         nama: "", penyedia: "", biaya: 0, tanggal_beli: "",
-        status: "Belum Mulai", kategori: "Crypto", asal: "Lokal", catatan_insight: "", link: "", rating: null,
+        status: "Belum Mulai", kategori: "Crypto", asal: "Lokal", catatan_insight: "", link: "", link2: "", rating: null,
         urutan_beli: null,
       });
     }
@@ -70,7 +73,9 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
   const onFormSubmit = (values: CourseFormValues) => {
     if (!values.nama) return;
     const biayaInIdr = isUSD ? values.biaya * rate : values.biaya;
-    onSubmit({ ...values, biaya: Math.round(biayaInIdr) });
+    const { link2, ...rest } = values;
+    const link = [values.link.trim(), link2.trim()].filter(Boolean).join(", ");
+    onSubmit({ ...rest, link, biaya: Math.round(biayaInIdr) });
     onOpenChange(false);
   };
 
@@ -207,15 +212,27 @@ export default function CourseDialog({ open, onOpenChange, onSubmit, editingCour
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-slate-700">{t("learning.linkLabel")}</label>
-            <Input
-              {...register("link")}
-              placeholder={t("learning.linkPlaceholder")}
-              className="bg-white border-slate-200 text-slate-900 focus-visible:ring-[#0074a6]/30 focus-visible:border-[#0074a6]"
-            />
-            <p className="text-xs text-slate-500">{t("learning.linkHint")}</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700">{t("learning.linkLabel")}</label>
+              <Input
+                {...register("link")}
+                type="url"
+                placeholder={t("learning.linkPlaceholder")}
+                className="bg-white border-slate-200 text-slate-900 focus-visible:ring-[#0074a6]/30 focus-visible:border-[#0074a6]"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-700">{t("learning.linkSecondary")}</label>
+              <Input
+                {...register("link2")}
+                type="url"
+                placeholder={t("learning.link2Placeholder")}
+                className="bg-white border-slate-200 text-slate-900 focus-visible:ring-[#0074a6]/30 focus-visible:border-[#0074a6]"
+              />
+            </div>
           </div>
+          <p className="text-xs text-slate-500">{t("learning.linkHint")}</p>
         </form>
 
         <DialogFooter className="gap-2 pt-2 sticky bottom-0 z-10 bg-white/95 backdrop-blur-sm">
